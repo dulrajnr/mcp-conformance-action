@@ -98,7 +98,8 @@ async function runTestMode(inputs: ActionInputs): Promise<void> {
 
   // Set outputs
   core.setOutput('results', JSON.stringify(results));
-  core.setOutput('all-passed', results.every(r => r.passed === r.total));
+  const allPassed = results.length > 0 && results.every(r => r.failed === 0 && r.total > 0);
+  core.setOutput('all-passed', allPassed);
 
   // Save results to files for artifact upload
   const resultsDir = path.join(process.cwd(), 'conformance-results');
@@ -153,6 +154,16 @@ async function runTestMode(inputs: ActionInputs): Promise<void> {
     } catch (error) {
       core.warning(`Failed to update badges: ${error}`);
     }
+  }
+
+  // A conformance report with failed scenarios must fail the invoking workflow.
+  // Results and artifacts above are intentionally produced first for diagnosis.
+  if (!allPassed) {
+    const failures = results
+      .filter(result => result.failed > 0 || result.total === 0)
+      .map(result => `${result.serverName}: ${result.failed}/${result.total} failed`)
+      .join(', ');
+    throw new Error(`MCP conformance tests failed (${failures})`);
   }
 }
 
