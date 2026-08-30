@@ -129,7 +129,7 @@ Protocol conformance and tool-delivery evidence are different checks. If your wo
       - name: Verify tool delivery attestation
         if: hashFiles('toa.json') != ''
         run: |
-          pip install "git+https://github.com/Carmel-Labs-Inc/toa.git#subdirectory=python"
+          pip install "git+https://github.com/Carmel-Labs-Inc/toa.git@345f24607919b5bdf143719b9ea062543cdfe88e#subdirectory=python"
           toa-verify toa.json --require-layer functional=pass
 ```
 
