@@ -113,6 +113,28 @@ jobs:
           comment-mode: update
 ```
 
+### Optional: verify Tool Outcome Attestation (TOA) after conformance
+
+Protocol conformance and tool-delivery evidence are different checks. If your workflow already produces a signed [toa](https://github.com/Carmel-Labs-Inc/toa) JSON (from any emitter), you can fail the job when verify fails. No AgentStatus account is required to verify.
+
+```yaml
+      - name: Run conformance tests
+        uses: mcp-use/mcp-conformance-action@v1
+        with:
+          mode: test
+          servers: |
+            [{"name": "my-server", "start-command": "npm start", "url": "http://localhost:3000/mcp"}]
+
+      # Optional. Provide toa.json from your emit step or an artifact.
+      - name: Verify tool delivery attestation
+        if: hashFiles('toa.json') != ''
+        run: |
+          pip install "git+https://github.com/Carmel-Labs-Inc/toa.git#subdirectory=python"
+          toa-verify toa.json --require-layer functional=pass
+```
+
+Pin the emitter public key with the flags documented in the toa repo when you need a specific signer.
+
 ## Inputs
 
 ### Test Mode Inputs
