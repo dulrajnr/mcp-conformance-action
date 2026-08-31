@@ -115,7 +115,7 @@ jobs:
 
 ### Optional: verify Tool Outcome Attestation (TOA) after conformance
 
-Protocol conformance and tool-delivery evidence are different checks. If your workflow already produces a signed [toa](https://github.com/Carmel-Labs-Inc/toa) JSON (from any emitter), you can fail the job when verify fails. No AgentStatus account is required to verify.
+Protocol conformance and tool-delivery evidence are different checks. If your workflow already produces a signed [toa](https://github.com/Carmel-Labs-Inc/toa) JSON from AgentStatus (or another emitter whose key you pin), you can fail the job when verify fails. The example below requires `emitter.name=agentstatus` and uses the packaged AgentStatus key; pass `--public-key` for another issuer. No AgentStatus account is required to verify.
 
 ```yaml
       - name: Run conformance tests
